@@ -334,7 +334,3 @@ class Report:
     def create_pdf(self):
         pass
 
-
-class Utilities:
-    def __init__(self) -> None:
-        pass
