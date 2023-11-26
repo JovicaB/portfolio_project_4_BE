@@ -320,17 +320,44 @@ class InterviewSession:
 
 
 class Report:
-    def __init__(self, session_title) -> None:
-        self.session_title = session_title
+    def __init__(self) -> None:
         self.json_file = INTERVIEW_JSON
-        self.json_data_encoder = JSONData()
+        self.json_data_encoder = JSONData(self.json_file)
+        self.main_key = "interview_sessions"
+    
+    def get_report_data(self, lang:str='ENG'):
+        """Get complete interview data from JSON
 
-    def get_sessions(self):
-        pass
+        Args:
+            lang (str, optional): defaults is 'ENG'.
 
-    def get_session_data(self):
-        pass
+        Returns:
+            dictionary with interview data 
+        """
+        raw_interview_data = self.json_data_encoder.read_json()
+        title = raw_interview_data[self.main_key]['project name']
+        interview_start_date = raw_interview_data[self.main_key]['session_date']
+        interview_date_name = raw_interview_data[self.main_key]['day_name']
 
-    def create_pdf(self):
-        pass
+        if lang == 'ENG':
+            interview_date_name = interview_date_name[0]
+        elif lang == 'SR':
+            interview_date_name = interview_date_name[1]
 
+        interview_data = {
+            'planner_data': [title, interview_start_date, interview_date_name],
+            'days': []
+        }
+
+        schedules_data = raw_interview_data[self.main_key]['days']
+        for days_data in schedules_data.values():
+            daily_schedules = []
+            for k, v in days_data['schedules'].items():
+                schedule_info = [value for value in v.values() if value is not None and value[0] is not None] ############
+                # schedule_info = [value for value in v.values() if value is not None and isinstance(value, list) and value and value[0] is not None]
+                if schedule_info:
+                    daily_schedules.append({k: schedule_info})
+
+            interview_data['days'].append({days_data['date']: daily_schedules})
+
+        return interview_data
