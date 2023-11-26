@@ -353,8 +353,7 @@ class Report:
         for days_data in schedules_data.values():
             daily_schedules = []
             for k, v in days_data['schedules'].items():
-                schedule_info = [value for value in v.values() if value is not None and value[0] is not None] ############
-                # schedule_info = [value for value in v.values() if value is not None and isinstance(value, list) and value and value[0] is not None]
+                schedule_info = [value for value in v.values() if value is not None and value[0] is not None]
                 if schedule_info:
                     daily_schedules.append({k: schedule_info})
 
